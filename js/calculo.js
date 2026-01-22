@@ -2,33 +2,25 @@ import { db } from "./firebase.js";
 import { ref, onValue } from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-let onza=0, dolar=0, descuento=0;
+const lista = document.getElementById("lista");
+const onzaTxt = document.getElementById("onza");
 
-const leySel = document.getElementById("ley");
-const resultado = document.getElementById("resultado");
+onValue(ref(db,"config"), snap => {
+  const { onza, dolar, descuento } = snap.val();
 
-// cargar leyes 75–99
-for(let i=75;i<=99;i++){
-  leySel.innerHTML += `<option value="${i}">${i}</option>`;
-}
+  onzaTxt.innerText = onza.toFixed(2);
+  lista.innerHTML = "";
 
-// leer config en tiempo real
-onValue(ref(db,"config"), snap=>{
-  const d = snap.val();
-  onza = d.onza;
-  dolar = d.dolar;
-  descuento = d.descuento;
-  calcular();
+  for(let ley=74; ley<=99; ley++){
+    const usd = ((onza/31.1035)*(ley/100))*(1-descuento/100);
+    const bs  = usd * dolar;
+
+    lista.innerHTML += `
+      <div class="fila">
+        <span>LEY ${ley}.00</span>
+        <span>${bs.toFixed(2)} Bs</span>
+        <span>${usd.toFixed(2)} $us</span>
+      </div>
+    `;
+  }
 });
-
-leySel.addEventListener("change", calcular);
-
-function calcular(){
-  const ley = leySel.value;
-  const precio =
-    ((onza * dolar) / 31.1035) *
-    (ley / 100) *
-    (1 - descuento / 100);
-
-  resultado.innerText = precio.toFixed(2);
-}
