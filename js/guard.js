@@ -1,58 +1,45 @@
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from
+import { onAuthStateChanged, signOut } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { ref, get } from
+import { ref, onValue } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-onAuthStateChanged(auth, async user => {
+console.log("guard.js activo");
+
+onAuthStateChanged(auth, (user) => {
+
   if (!user) {
-    window.location = "login.html";
+    window.location.href = "login.html";
     return;
   }
 
-  const snap = await get(ref(db, `usuarios/${user.uid}`));
-  if (!snap.exists()) {
-    window.location = "login.html";
+  const uid = user.uid;
+  const localToken = localStorage.getItem("sessionToken");
+
+  if (!localToken) {
+    signOut(auth);
+    window.location.href = "login.html";
     return;
   }
 
-  const u = snap.val();
-  if (new Date() > new Date(u.fecha_limite) || !u.activo) {
-    alert("Acceso vencido");
-    auth.signOut();
-    window.location = "login.html";
-  }
+  const tokenRef = ref(db, `usuarios/${uid}/sessionToken`);
 
+  // 🔥 ESCUCHA EN TIEMPO REAL
+  onValue(tokenRef, (snap) => {
+    if (!snap.exists()) return;
 
+    const tokenDB = snap.val();
 
+    console.log("Token DB:", tokenDB);
+    console.log("Token local:", localToken);
 
-
-  
-const localToken = localStorage.getItem("sessionToken");
-
-if (!localToken) {
-  auth.signOut();
-  window.location = "login.html";
-  return;
-}
-
-// 🔥 ESCUCHAR CAMBIOS DE TOKEN (SESION ÚNICA)
-onValue(ref(db, `usuarios/${user.uid}/sessionToken`), snap => {
-  if (!snap.exists()) return;
-
-  const tokenDB = snap.val();
-
-  if (tokenDB !== localToken) {
-    alert("Tu sesión fue abierta en otro dispositivo");
-    auth.signOut();
-    localStorage.removeItem("sessionToken");
-    window.location = "login.html";
-  }
+    if (tokenDB !== localToken) {
+      alert("Tu cuenta fue abierta en otro dispositivo");
+      localStorage.removeItem("sessionToken");
+      signOut(auth);
+      window.location.href = "login.html";
+    }
+  });
 });
 
-
-
-
-  
-});
 
