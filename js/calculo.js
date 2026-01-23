@@ -7,7 +7,7 @@ const LEY_MAX = 99;
 
 // 🔴 ONZA TEMPORAL (luego será API)
 function obtenerOnza() {
-  return 4828.95; // prueba controlada
+  return 4100; // prueba controlada
 }
 
 export async function recalcularPrecios() {
