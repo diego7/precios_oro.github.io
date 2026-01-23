@@ -2,23 +2,23 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Test</title>
+  <title>Login</title>
 </head>
 <body>
 
-  <button id="btnLogin">Probar</button>
+  <h2>Login</h2>
 
-  <script type="module">
-    alert("SCRIPT CARGADO");
+  <input type="email" id="email" placeholder="Correo">
+  <input type="password" id="password" placeholder="Contraseña">
 
-    const btn = document.getElementById("btnLogin");
-    btn.addEventListener("click", () => {
-      alert("CLICK FUNCIONA");
-    });
-  </script>
+  <button id="btnLogin" type="button">Ingresar</button>
+
+  <!-- SOLO ESTE SCRIPT -->
+  <script type="module" src="js/auth.js"></script>
 
 </body>
 </html>
+
 
 
 
