@@ -2,21 +2,29 @@ import { db } from "./firebase.js";
 import { ref, set, get } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+console.log("calculo.js cargado");
+
 const LEY_MIN = 75;
 const LEY_MAX = 99;
 
-// 🔴 ONZA TEMPORAL (luego será API)
+// 🔹 ONZA TEMPORAL (luego será API real)
 function obtenerOnza() {
-  return 4900; // prueba controlada
+  return 4100; // prueba
 }
 
 export async function recalcularPrecios() {
+  console.log("recalcularPrecios ejecutado");
+
   const snap = await get(ref(db, "config"));
-  if (!snap.exists()) return;
+  if (!snap.exists()) {
+    console.error("No existe config");
+    return;
+  }
 
   const { dolar, descuento } = snap.val();
   const onza = obtenerOnza();
 
+  // 🔥 ESTA LÍNEA ES CLAVE
   await set(ref(db, "config/ultima_onza"), onza);
 
   const precios = {};
@@ -31,5 +39,8 @@ export async function recalcularPrecios() {
     };
   }
 
+  // 🔥 Y ESTA TAMBIÉN
   await set(ref(db, "precios"), precios);
+
+  console.log("Precios y onza guardados");
 }
