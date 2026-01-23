@@ -1,7 +1,7 @@
 import { auth, db } from "./firebase.js";
 import { signInWithEmailAndPassword } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { ref, get } from
+import { ref, get, set } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 console.log("auth.js cargado");
@@ -26,6 +26,18 @@ window.addEventListener("DOMContentLoaded", () => {
       const cred = await signInWithEmailAndPassword(auth, email, pass);
       const uid = cred.user.uid;
 
+      
+      // 🔐 GENERAR TOKEN DE SESIÓN ÚNICO
+const token = crypto.randomUUID();
+
+// Guardar token en Firebase
+await set(ref(db, `usuarios/${uid}/sessionToken`), token);
+
+// Guardar token en el navegador
+localStorage.setItem("sessionToken", token);
+
+      
+
       const snap = await get(ref(db, `usuarios/${uid}`));
       if (!snap.exists()) {
         alert("Usuario no autorizado");
@@ -48,3 +60,4 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
