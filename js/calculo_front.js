@@ -26,12 +26,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     const gramoUsd = (onza / 31.1035) * (ley / 100);
     const gramoBs = gramoUsd * dolar * (1 - descuento / 100);
 
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <strong>Ley ${ley}</strong><br>
-      ${gramoBs.toFixed(2)} Bs<br>
-      ${gramoUsd.toFixed(2)} USD
-    `;
+   const div = document.createElement("div");
+div.className = "card";
+div.innerHTML = `
+  <div class="ley">Ley ${ley}</div>
+  <div class="bs">${gramoBs.toFixed(2)} Bs</div>
+  <div class="usd">${gramoUsd.toFixed(2)} USD</div>
+`;
     lista.appendChild(div);
   }
 });
