@@ -1,23 +1,77 @@
-body.dark {
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* FONDO GENERAL */
+body {
   background: #000;
-  color: #0f0;
-  font-family: Arial, sans-serif;
-  padding: 20px;
+  color: #00ff6a;
+  min-height: 100vh;
+  padding: 16px;
 }
 
-h1, h2 {
-  color: #00ff88;
+/* CONTENEDOR CENTRAL */
+.container {
+  max-width: 900px;
+  margin: auto;
 }
 
-input, button {
-  display: block;
-  margin: 8px 0;
-  padding: 8px;
-  background: #111;
-  color: #0f0;
-  border: 1px solid #0f0;
+/* TÍTULO */
+h1 {
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: 2rem;
 }
 
+/* ONZA */
+.onza {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+/* GRID DE PRECIOS */
 #lista-precios {
-  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* TARJETA */
+.card {
+  background: #0d0d0d;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #003b1c;
+  box-shadow: 0 0 10px rgba(0,255,100,0.08);
+}
+
+/* LEY */
+.card .ley {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+/* PRECIOS */
+.card .bs {
+  font-size: 1.05rem;
+}
+
+.card .usd {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* RESPONSIVE EXTRA */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2.4rem;
+  }
 }
