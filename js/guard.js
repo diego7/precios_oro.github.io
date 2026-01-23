@@ -22,4 +22,37 @@ onAuthStateChanged(auth, async user => {
     auth.signOut();
     window.location = "login.html";
   }
+
+
+
+
+
+  
+const localToken = localStorage.getItem("sessionToken");
+
+if (!localToken) {
+  auth.signOut();
+  window.location = "login.html";
+  return;
+}
+
+// 🔥 ESCUCHAR CAMBIOS DE TOKEN (SESION ÚNICA)
+onValue(ref(db, `usuarios/${user.uid}/sessionToken`), snap => {
+  if (!snap.exists()) return;
+
+  const tokenDB = snap.val();
+
+  if (tokenDB !== localToken) {
+    alert("Tu sesión fue abierta en otro dispositivo");
+    auth.signOut();
+    localStorage.removeItem("sessionToken");
+    window.location = "login.html";
+  }
 });
+
+
+
+
+  
+});
+
