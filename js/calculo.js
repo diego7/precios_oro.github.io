@@ -1,0 +1,35 @@
+import { db } from "./firebase.js";
+import { ref, set, get } from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const LEY_MIN = 75;
+const LEY_MAX = 99;
+
+// 🔴 ONZA TEMPORAL (luego será API)
+function obtenerOnza() {
+  return 4828.95; // prueba controlada
+}
+
+export async function recalcularPrecios() {
+  const snap = await get(ref(db, "config"));
+  if (!snap.exists()) return;
+
+  const { dolar, descuento } = snap.val();
+  const onza = obtenerOnza();
+
+  await set(ref(db, "config/onza"), onza);
+
+  const precios = {};
+
+  for (let ley = LEY_MIN; ley <= LEY_MAX; ley++) {
+    const gramoUsd = (onza / 31.1035) * (ley / 100);
+    const gramoBs = gramoUsd * dolar * (1 - descuento / 100);
+
+    precios[`ley_${ley}`] = {
+      usd: gramoUsd.toFixed(2),
+      bs: gramoBs.toFixed(2)
+    };
+  }
+
+  await set(ref(db, "precios"), precios);
+}
