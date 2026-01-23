@@ -1,10 +1,9 @@
 export async function obtenerOnzaTroy() {
   try {
-    // API real envuelta en proxy CORS
     const url = "https://api.metals.live/v1/spot/gold";
-    const proxy = "https://api.allorigins.win/raw?url=";
+    const proxy = "https://thingproxy.freeboard.io/fetch/";
 
-    const res = await fetch(proxy + encodeURIComponent(url));
+    const res = await fetch(proxy + url);
     const data = await res.json();
 
     // Formato: [["gold", precio, timestamp]]
@@ -18,3 +17,4 @@ export async function obtenerOnzaTroy() {
     return null;
   }
 }
+
