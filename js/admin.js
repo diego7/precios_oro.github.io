@@ -2,7 +2,7 @@ import { db } from "./firebase.js";
 import { ref, get, update } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-console.log("admin.js cargado");
+
 
 window.addEventListener("DOMContentLoaded", async () => {
   console.log("DOM admin listo");
@@ -42,3 +42,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     alert("Configuración guardada");
   });
 });
+
