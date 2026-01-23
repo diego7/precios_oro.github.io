@@ -17,7 +17,7 @@ export async function recalcularPrecios() {
   const { dolar, descuento } = snap.val();
   const onza = obtenerOnza();
 
-  await set(ref(db, "config/onza"), onza);
+  await set(ref(db, "config/ultima_onza"), onza);
 
   const precios = {};
 
