@@ -8,31 +8,61 @@ const LEY_MAX = 99;
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-  const onza = await obtenerOnzaTroy();
-  if (!onza) {
-    alert("No se pudo obtener la onza");
+  // 🔹 Elementos HTML
+  const onzaSpan = document.getElementById("onzaValor");
+  const lista = document.getElementById("lista-precios");
+
+  if (!onzaSpan || !lista) {
+    console.error("Faltan elementos HTML (onzaValor o lista-precios)");
     return;
   }
 
-  document.getElementById("onzaValor").textContent = onza.toFixed(2);
+  // 🔹 Obtener onza troy
+  const onza = await obtenerOnzaTroy();
 
-  const snap = await get(ref(db, "config"));
-  const { dolar, descuento } = snap.val();
+  if (!onza) {
+    onzaSpan.textContent = "Sin conexión";
+    return;
+  }
 
-  const lista = document.getElementById("lista-precios");
+  onzaSpan.textContent = onza.toFixed(2);
+
+  // 🔹 Obtener configuración (dólar y descuento)
+  let dolar = 0;
+  let descuento = 0;
+
+  try {
+    const snap = await get(ref(db, "config"));
+    if (!snap.exists()) {
+      console.error("No existe config en Firebase");
+      return;
+    }
+
+    dolar = Number(snap.val().dolar);
+    descuento = Number(snap.val().descuento);
+
+  } catch (e) {
+    console.error("Error leyendo config", e);
+    return;
+  }
+
+  // 🔹 Limpiar lista
   lista.innerHTML = "";
 
+  // 🔹 Calcular y mostrar precios
   for (let ley = LEY_MIN; ley <= LEY_MAX; ley++) {
+
     const gramoUsd = (onza / 31.1035) * (ley / 100);
     const gramoBs = gramoUsd * dolar * (1 - descuento / 100);
 
-   const div = document.createElement("div");
-div.className = "card";
-div.innerHTML = `
-  <div class="ley">Ley ${ley}</div>
-  <div class="bs">${gramoBs.toFixed(2)} Bs</div>
-  <div class="usd">${gramoUsd.toFixed(2)} USD</div>
-`;
-    lista.appendChild(div);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="ley">Ley ${ley}</div>
+      <div class="bs">${gramoBs.toFixed(2)} Bs</div>
+      <div class="usd">${gramoUsd.toFixed(2)} USD</div>
+    `;
+
+    lista.appendChild(card);
   }
 });
