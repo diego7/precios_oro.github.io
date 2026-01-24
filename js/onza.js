@@ -1,13 +1,20 @@
 export async function obtenerOnzaTroy() {
   try {
-    const res = await fetch("https://api.metals.live/v1/spot/gold");
+    // API real envuelta en proxy CORS
+    const url = "https://api.metals.live/v1/spot/gold";
+    const proxy = "https://api.allorigins.win/raw?url=";
+
+    const res = await fetch(proxy + encodeURIComponent(url));
     const data = await res.json();
 
     // Formato: [["gold", precio, timestamp]]
-    return Number(data[0][1]);
+    const onza = Number(data[0][1]);
+
+    if (isNaN(onza)) return null;
+    return onza;
 
   } catch (e) {
-    console.error("Error obteniendo onza troy", e);
+    console.error("Error obteniendo onza troy:", e);
     return null;
   }
 }
