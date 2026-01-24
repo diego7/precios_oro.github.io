@@ -1,19 +1,18 @@
 export async function obtenerOnzaTroy() {
   try {
-    const url = "https://api.metals.live/v1/spot/gold";
-    const proxy = "https://thingproxy.freeboard.io/fetch/";
+    const res = await fetch("https://stooq.com/q/l/?s=xauusd&i=d");
+    const text = await res.text();
 
-    const res = await fetch(proxy + url);
-    const data = await res.json();
+    const lines = text.trim().split("\n");
+    if (lines.length < 2) return null;
 
-    // Formato: [["gold", precio, timestamp]]
-    const onza = Number(data[0][1]);
+    const cols = lines[1].split(",");
+    const onza = Number(cols[4]); // Close price
 
-    if (isNaN(onza)) return null;
-    return onza;
+    return isNaN(onza) ? null : onza;
 
   } catch (e) {
-    console.error("Error obteniendo onza troy:", e);
+    console.error("Error obteniendo onza (stooq)", e);
     return null;
   }
 }
