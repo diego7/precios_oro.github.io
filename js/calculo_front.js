@@ -8,38 +8,28 @@ const LEY_MAX = 99;
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-  const onzaSpan = document.getElementById("onzaValor");
-  const lista = document.getElementById("lista-precios");
-
-  if (!onzaSpan || !lista) return;
-
-  // 🔹 SOLO al entrar
   const onza = await obtenerOnzaTroy();
-  if (!onza) {
-    onzaSpan.textContent = "No disponible";
-    return;
-  }
+  if (!onza) return;
 
-  onzaSpan.textContent = onza.toFixed(2);
+  document.getElementById("onzaValor").textContent = onza.toFixed(2);
 
   const snap = await get(ref(db, "config"));
-  if (!snap.exists()) return;
-
   const { dolar, descuento } = snap.val();
 
+  const lista = document.getElementById("lista-precios");
   lista.innerHTML = "";
 
   for (let ley = LEY_MIN; ley <= LEY_MAX; ley++) {
-    const grUsd = (onza / 31.1035) * (ley / 100);
-    const grBs = grUsd * dolar * (1 - descuento / 100);
+    const gramoUsd = (onza / 31.1035) * (ley / 100);
+    const gramoBs = gramoUsd * dolar * (1 - descuento / 100);
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="ley">Ley ${ley}</div>
-      <div class="bs">${grBs.toFixed(2)} Bs</div>
-      <div class="usd">${grUsd.toFixed(2)} USD</div>
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <strong>Ley ${ley}</strong><br>
+      ${gramoBs.toFixed(2)} Bs<br>
+      ${gramoUsd.toFixed(2)} USD
     `;
-    lista.appendChild(card);
+
+    lista.appendChild(div);
   }
 });
