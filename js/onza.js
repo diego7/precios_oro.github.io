@@ -1,30 +1,13 @@
 export async function obtenerOnzaTroy() {
   try {
-    const res = await fetch(
-      "https://scanner.tradingview.com/crypto/scan",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          symbols: {
-            tickers: ["OANDA:XAUUSD"],
-            query: { types: [] }
-          },
-          columns: ["close"]
-        })
-      }
-    );
-
+    const res = await fetch("https://api.metals.live/v1/spot/gold");
     const data = await res.json();
-    const onza = data?.data?.[0]?.d?.[0];
 
-    return isNaN(onza) ? null : Number(onza);
+    // formato: [["gold", precio, timestamp]]
+    return Number(data[0][1]);
 
-  } catch (e) {
-    console.error("TradingView falló", e);
+  } catch (err) {
+    console.error("Error obteniendo onza", err);
     return null;
   }
 }
-
