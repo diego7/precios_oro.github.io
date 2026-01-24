@@ -9,7 +9,10 @@ const LEY_MAX = 99;
 window.addEventListener("DOMContentLoaded", async () => {
 
   const onza = await obtenerOnzaTroy();
-  if (!onza) return;
+  if (!onza) {
+    alert("No se pudo obtener la onza");
+    return;
+  }
 
   document.getElementById("onzaValor").textContent = onza.toFixed(2);
 
@@ -29,7 +32,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       ${gramoBs.toFixed(2)} Bs<br>
       ${gramoUsd.toFixed(2)} USD
     `;
-
     lista.appendChild(div);
   }
 });
