@@ -1,18 +1,29 @@
 export async function obtenerOnzaTroy() {
   try {
-    const res = await fetch("https://stooq.com/q/l/?s=xauusd&i=d");
-    const text = await res.text();
+    const res = await fetch(
+      "https://scanner.tradingview.com/crypto/scan",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          symbols: {
+            tickers: ["OANDA:XAUUSD"],
+            query: { types: [] }
+          },
+          columns: ["close"]
+        })
+      }
+    );
 
-    const lines = text.trim().split("\n");
-    if (lines.length < 2) return null;
+    const data = await res.json();
+    const onza = data?.data?.[0]?.d?.[0];
 
-    const cols = lines[1].split(",");
-    const onza = Number(cols[4]); // Close price
-
-    return isNaN(onza) ? null : onza;
+    return isNaN(onza) ? null : Number(onza);
 
   } catch (e) {
-    console.error("Error obteniendo onza (stooq)", e);
+    console.error("TradingView falló", e);
     return null;
   }
 }
